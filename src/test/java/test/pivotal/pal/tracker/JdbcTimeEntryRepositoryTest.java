@@ -23,8 +23,10 @@ public class JdbcTimeEntryRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
+
         MysqlDataSource dataSource = new MysqlDataSource();
         dataSource.setUrl(System.getenv("SPRING_DATASOURCE_URL"));
+        //dataSource.setUrl("jdbc:mysql://localhost:3306/tracker_test?user=tracker&useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false");
 
         subject = new JdbcTimeEntryRepository(dataSource);
 
@@ -36,7 +38,7 @@ public class JdbcTimeEntryRepositoryTest {
 
     @Test
     public void createInsertsATimeEntryRecord() throws Exception {
-        TimeEntry newTimeEntry = new TimeEntry(123, 321, LocalDate.parse("2017-01-09"), 8);
+        TimeEntry newTimeEntry = new TimeEntry(123L, 321L, LocalDate.parse("2017-01-09"), 8);
         TimeEntry entry = subject.create(newTimeEntry);
 
         Map<String, Object> foundEntry = jdbcTemplate.queryForMap("Select * from time_entries where id = ?", entry.getId());
@@ -50,7 +52,7 @@ public class JdbcTimeEntryRepositoryTest {
 
     @Test
     public void createReturnsTheCreatedTimeEntry() throws Exception {
-        TimeEntry newTimeEntry = new TimeEntry(123, 321, LocalDate.parse("2017-01-09"), 8);
+        TimeEntry newTimeEntry = new TimeEntry(123L, 321L, LocalDate.parse("2017-01-09"), 8);
         TimeEntry entry = subject.create(newTimeEntry);
 
         assertThat(entry.getId()).isNotNull();
@@ -114,7 +116,7 @@ public class JdbcTimeEntryRepositoryTest {
             "INSERT INTO time_entries (id, project_id, user_id, date, hours) " +
                 "VALUES (1000, 123, 321, '2017-01-09', 8)");
 
-        TimeEntry timeEntryUpdates = new TimeEntry(456, 987, LocalDate.parse("2017-01-10"), 10);
+        TimeEntry timeEntryUpdates = new TimeEntry(456L, 987L, LocalDate.parse("2017-01-10"), 10);
 
         TimeEntry updatedTimeEntry = subject.update(1000L, timeEntryUpdates);
 
@@ -131,7 +133,7 @@ public class JdbcTimeEntryRepositoryTest {
             "INSERT INTO time_entries (id, project_id, user_id, date, hours) " +
                 "VALUES (1000, 123, 321, '2017-01-09', 8)");
 
-        TimeEntry updatedTimeEntry = new TimeEntry(456, 322, LocalDate.parse("2017-01-10"), 10);
+        TimeEntry updatedTimeEntry = new TimeEntry(456L, 322L, LocalDate.parse("2017-01-10"), 10);
 
         TimeEntry timeEntry = subject.update(1000L, updatedTimeEntry);
 

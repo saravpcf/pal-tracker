@@ -1,28 +1,33 @@
 package io.pivotal.pal.tracker;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/time-entries", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TimeEntryController {
 
+
     private TimeEntryRepository timeEntryRepository;
-    public TimeEntryController( TimeEntryRepository repository) {
+
+    public TimeEntryController(  TimeEntryRepository repository) {
         this.timeEntryRepository = repository;
     }
 
 
-    @PostMapping("/time-entries")
+    @PostMapping("")
     public ResponseEntity<TimeEntry> create(@RequestBody TimeEntry entry) {
         TimeEntry createdEntry = timeEntryRepository.create(entry);
         return new ResponseEntity<TimeEntry>(createdEntry, HttpStatus.CREATED);
 
     }
 
-    @GetMapping("/time-entries/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<TimeEntry> read(@PathVariable Long id) {
         TimeEntry entry = timeEntryRepository.find(id);
         if( entry != null ) {
@@ -34,7 +39,7 @@ public class TimeEntryController {
 
     }
 
-    @PutMapping("/time-entries/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TimeEntry> update(@PathVariable Long id,  @RequestBody TimeEntry updateEntry) {
         TimeEntry entry = timeEntryRepository.update(id, updateEntry);
         if( entry != null ) {
@@ -44,13 +49,13 @@ public class TimeEntryController {
         }
     }
 
-    @DeleteMapping("/time-entries/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<TimeEntry> delete(@PathVariable Long id) {
         TimeEntry entry = timeEntryRepository.delete(id);
         return new ResponseEntity<TimeEntry>(entry, HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/time-entries")
+    @GetMapping("")
     public ResponseEntity<List<TimeEntry>> list() {
         List<TimeEntry> entries = timeEntryRepository.list();
         return new ResponseEntity<List<TimeEntry>>(entries, HttpStatus.OK);
